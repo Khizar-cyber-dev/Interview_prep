@@ -4,40 +4,19 @@ import { db } from "@/firebase/admin";
 import { auth } from '@/firebase/admin'
 import { cookies } from "next/headers";
 
-// const SESSION_DURATION = 60 * 60 * 24 * 7;
-
-// export async function setSessionCookie(idToken: string) {
-//   const cookieStore = await cookies();
-
-//   const sessionCookie = await auth.createSessionCookie(idToken, {
-//     expiresIn: SESSION_DURATION * 1000,
-//   });
-
-//   cookieStore.set("session", sessionCookie, {
-//     maxAge: SESSION_DURATION,
-//     httpOnly: true,
-//     secure: process.env.NODE_ENV === "production",
-//     path: "/",
-//     sameSite: "lax",
-//   });
-// }
-
-
-const SESSION_DURATION = 60 * 60 * 24 * 7; // 7 days
+const SESSION_DURATION = 60 * 60 * 24 * 7;
 
 export async function setSessionCookie(idToken: string) {
   try {
     const cookieStore = cookies();
     
-    // First verify the ID token
     const decodedToken = await auth.verifyIdToken(idToken);
     
-    // Then create session cookie
     const sessionCookie = await auth.createSessionCookie(idToken, {
       expiresIn: SESSION_DURATION * 1000,
     });
 
-    cookieStore.set("session", sessionCookie, {
+    (await cookieStore).set("session", sessionCookie, {
       maxAge: SESSION_DURATION,
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
@@ -56,10 +35,8 @@ export async function signIn(params: SignInParams) {
   const { email, idToken } = params;
 
   try {
-    // First verify the ID token
     const decodedToken = await auth.verifyIdToken(idToken);
     
-    // Verify the email matches the token
     if (decodedToken.email !== email) {
       return {
         success: false,
@@ -67,7 +44,6 @@ export async function signIn(params: SignInParams) {
       };
     }
 
-    // Check if user exists (optional - token verification is sufficient)
     try {
       await auth.getUser(decodedToken.uid);
     } catch (error) {
@@ -77,7 +53,6 @@ export async function signIn(params: SignInParams) {
       };
     }
 
-    // Set session cookie
     const cookieSet = await setSessionCookie(idToken);
     if (!cookieSet) {
       return {
@@ -164,6 +139,26 @@ export async function signUp(params: SignUpParams) {
     };
   }
 }
+
+
+// const SESSION_DURATION = 60 * 60 * 24 * 7;
+
+// export async function setSessionCookie(idToken: string) {
+//   const cookieStore = await cookies();
+
+//   const sessionCookie = await auth.createSessionCookie(idToken, {
+//     expiresIn: SESSION_DURATION * 1000,
+//   });
+
+//   cookieStore.set("session", sessionCookie, {
+//     maxAge: SESSION_DURATION,
+//     httpOnly: true,
+//     secure: process.env.NODE_ENV === "production",
+//     path: "/",
+//     sameSite: "lax",
+//   });
+// }
+
 
 // export async function signIn(params: SignInParams) {
 //   const { email, idToken } = params;

@@ -48,8 +48,8 @@ export async function POST(request: Request) {
     console.error("Error saving interview:", error);
     return Response.json({ success: false, error: (error as any).message }, { status: 500 });
   }
-}
+};
 
 export async function GET() {
   return Response.json({ success: true, data: "Thank you!" }, { status: 200 });
-}
+};

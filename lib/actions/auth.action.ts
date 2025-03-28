@@ -4,6 +4,26 @@ import { db } from "@/firebase/admin";
 import { auth } from '@/firebase/admin'
 import { cookies } from "next/headers";
 
+
+interface SignUpParams {
+  uid: string;
+  name: string;
+  email: string;
+  password: string;
+}
+
+interface SignInParams {
+  email: string;
+  idToken: string;
+}
+
+interface User {
+  id: string;
+  name: string;
+  email: string;
+}
+
+
 const SESSION_DURATION = 60 * 60 * 24 * 7;
 
 export async function setSessionCookie(idToken: string) {
@@ -81,25 +101,6 @@ export async function signIn(params: SignInParams) {
     };
   }
 }
-
-interface SignUpParams {
-  uid: string;
-  name: string;
-  email: string;
-  password: string;
-}
-
-interface SignInParams {
-  email: string;
-  idToken: string;
-}
-
-interface User {
-  id: string;
-  name: string;
-  email: string;
-}
-
 export async function signUp(params: SignUpParams) {
   const { uid, name, email } = params;
 
@@ -139,7 +140,6 @@ export async function signUp(params: SignUpParams) {
     };
   }
 }
-
 
 // const SESSION_DURATION = 60 * 60 * 24 * 7;
 

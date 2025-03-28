@@ -4,6 +4,7 @@ import { getCurrentUser } from "@/lib/actions/auth.action";
 
 const page = async () => {
     const user = await getCurrentUser();
+    console.log(user?.id || "no user found");
   return (
     <div>
         <h3>Interview Generation</h3>
